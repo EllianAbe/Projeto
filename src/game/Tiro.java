@@ -10,11 +10,10 @@ public class Tiro {
 	private int velocidade;
 	private int tamX = 3;
 	private int tamY = 15;
+	private Audio shotsound = new Audio("audios/SWShot.wav");
 	
-	
-	//quando crio o tiro
 	public Tiro(int inicioX, int inicioY) {
-		
+		shotsound.som(0);
 		this.x = inicioX;
 		this.y = inicioY;
 		velocidade = 10;

@@ -14,7 +14,6 @@ public class Explosao {
 	private int coluna;
 	
 	public Explosao(BufferedImage imagem, int x, int y) {
-		
 		this.imagem = imagem;
 		this.x = x;
 		this.y = y;

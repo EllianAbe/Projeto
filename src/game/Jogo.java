@@ -9,10 +9,10 @@ public class Jogo {
 
 	static DisplayMode monitor = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
 	
-	public static void main(String[] args) {
+	public void play() {
 		
 		JFrame janela = new JFrame("Space Invaders");
-		//janela.setSize(1366, 768);
+		
 		janela.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		janela.setUndecorated(true);
 		janela.setLayout(null);
@@ -27,8 +27,7 @@ public class Jogo {
 		
 		
 		janela.setVisible(true);
-		
-		
 	}
+	
 	
 }

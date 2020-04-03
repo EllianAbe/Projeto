@@ -12,16 +12,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
-import javax.management.monitor.Monitor;
+import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 
 public class SpaceInvaders extends JPanel implements Runnable, KeyListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private Font minhaFonte = new Font("Consolas", Font.BOLD, 20);
 	
 	private Nave nave; 
 	private int direcao = 0;
-	private ArrayList<Tiro> tiros; //parecido com o vetor... só que podemos adicionar e retirar elementos
+	private ArrayList<Tiro> tiros; 
 	private ArrayList<Inimigo> inimigos;
 	private ArrayList<Explosao> explosoes;
 	private Background fundo;
@@ -29,11 +34,11 @@ public class SpaceInvaders extends JPanel implements Runnable, KeyListener {
 	private float fechandoEm = 10;
 	private boolean perdeu;
 	private BufferedImage imagemExplosao;
+	private Audio soundtrack = new Audio("audios/Soundtrack.wav");
+	private Audio gameover = new Audio("audios/GameOver.wav");
+	private boolean executegameover = false;
 	
-	
-	//CONSTRUTOR - é chamado quando fazemos o new SpaceInvaders();
-	public SpaceInvaders() {
-	
+	public SpaceInvaders() {	
 		nave = new Nave();
 		tiros = new ArrayList<Tiro>();
 		inimigos = new ArrayList<Inimigo>();
@@ -42,6 +47,8 @@ public class SpaceInvaders extends JPanel implements Runnable, KeyListener {
 		fundo = new Background();
 		ganhou = false;
 		perdeu = false;
+		
+		soundtrack.som(Clip.LOOP_CONTINUOUSLY);
 		
 		BufferedImage imagemInimigo = null;
 		try {
@@ -54,7 +61,7 @@ public class SpaceInvaders extends JPanel implements Runnable, KeyListener {
 		
 		
 		for (int i = 0; i < 80; i++) {
-			inimigos.add(new Inimigo(imagemInimigo, 50 + i%(20 * 75), 50 +  i/20 * 75, 1));
+			inimigos.add(new Inimigo(imagemInimigo, 50 + i / 20 * 75, 50 +  i / 20 * 75, 1));
 		}
 		
 		Thread lacoDoJogo = new Thread(this);
@@ -98,7 +105,7 @@ public class SpaceInvaders extends JPanel implements Runnable, KeyListener {
 			inimigos.get(i).atualizar();
 			
 				if (inimigos.get(i).getY() >= (Jogo.monitor.getHeight() - 150)) {
-				perdeu = true;
+					perdeu = true;
 				}
 		}
 		
@@ -152,9 +159,8 @@ public class SpaceInvaders extends JPanel implements Runnable, KeyListener {
 	
 	int x = 0;
 	public void paintComponent(Graphics g2) {
-		super.paintComponent(g2);	//limpar a tela
+		super.paintComponent(g2);	
 		
-		//copia e cola da internet - para ligar o anti aliasing
 		Graphics2D g = (Graphics2D) g2.create();
 		g.setRenderingHint(
 			    RenderingHints.KEY_ANTIALIASING,
@@ -193,9 +199,13 @@ public class SpaceInvaders extends JPanel implements Runnable, KeyListener {
 		}
 		
 		if (perdeu) {
+			if(!executegameover) {
+				gameover.som(0);
+				executegameover = true;
+			}
 			g.setColor(Color.white);
 			g.setFont(minhaFonte);
-			g.drawString("VOCÊ É MUITO RUIM!!! Fechando em " + fechandoEm + " segundos", Jogo.monitor.getWidth()/2 - 300, Jogo.monitor.getHeight()/2 );
+			g.drawString("VOCÊ É MUITO RUIM!!! Fechando em " + fechandoEm, Jogo.monitor.getWidth()/2 - 300, Jogo.monitor.getHeight()/2 );
 			
 			fechandoEm -= 0.01666f;
 			if (fechandoEm <= 0) {
@@ -214,7 +224,6 @@ public class SpaceInvaders extends JPanel implements Runnable, KeyListener {
 		}
 		
 	}
-
 
 	@Override
 	public void keyPressed(KeyEvent e) {
